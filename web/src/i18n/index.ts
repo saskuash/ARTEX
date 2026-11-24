@@ -21,7 +21,7 @@ export const DEFAULT_LOCALE: Locale = "en";
 
 export const LOCALES: { code: Locale; label: string }[] = [
   { code: "tr", label: "Türkçe" },
-  { code: "en", label: "English" },
+  { code: "en", label: "English (US)" },
   { code: "zh-CN", label: "简体中文" },
 ];
 
