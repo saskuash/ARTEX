@@ -44,34 +44,34 @@ test("static export remains English and unknown keys fall back safely", () => {
   assert.equal(api.t("Unknown {value}", { value: 3 }), "Unknown 3");
 });
 
-test("saved Chinese preference wins and sets the document and Intl locale", () => {
-  const { api, document } = load({ saved: "zh-CN", languages: ["tr-TR"] });
-  assert.equal(api.locale, "zh-CN");
-  assert.equal(api.intlLocale, "zh-CN");
-  assert.equal(document.documentElement.lang, "zh-CN");
-  assert.equal(api.t("Language"), "语言");
-  assert.equal(api.t("{count} tasks", { count: 3 }), "3 个任务");
-  assert.equal(api.t("Task #{id}"), "任务 #{id}");
+test("saved Turkish preference wins and sets the document and Intl locale", () => {
+  const { api, document } = load({ saved: "tr", languages: ["en-US"] });
+  assert.equal(api.locale, "tr");
+  assert.equal(api.intlLocale, "tr-TR");
+  assert.equal(document.documentElement.lang, "tr");
+  assert.equal(api.t("Language"), "Dil");
+  assert.equal(api.t("{count} tasks", { count: 3 }), "3 görev");
+  assert.equal(api.t("Task #{id}"), "Görev #{id}");
   assert.equal(api.t("constructor"), "constructor");
   assert.equal(api.t("toString"), "toString");
   assert.equal(api.t("__proto__"), "__proto__");
-  assert.equal(api.t("{count} tasks", Object.create({ count: 3 })), "{count} 个任务");
+  assert.equal(api.t("{count} tasks", Object.create({ count: 3 })), "{count} görev");
 });
 
-test("Chinese browser tags, fallback languages, invalid preferences and blocked storage", () => {
-  for (const tag of ["zh", "zh-CN", "zh-SG", "zh-Hans-CN", "ZH-cn"]) {
-    assert.equal(load({ languages: [tag] }).api.locale, "zh-CN");
+test("unsupported languages, invalid preferences and blocked storage fall back safely", () => {
+  for (const tag of ["zh", "zh-CN", "zh-SG", "zh-Hans-CN", "ZH-cn", "fr-FR", "de-DE"]) {
+    assert.equal(load({ languages: [tag] }).api.locale, "en");
   }
-  assert.equal(load({ saved: "invalid", languages: ["fr-FR", "zh-CN"] }).api.locale, "zh-CN");
-  assert.equal(load({ blocked: true, languages: ["zh-CN"] }).api.locale, "zh-CN");
-  assert.equal(load({ languages: null, language: "zh-CN" }).api.locale, "zh-CN");
+  assert.equal(load({ saved: "invalid", languages: ["fr-FR", "tr-TR"] }).api.locale, "tr");
+  assert.equal(load({ blocked: true, languages: ["tr-TR"] }).api.locale, "tr");
+  assert.equal(load({ languages: null, language: "tr-TR" }).api.locale, "tr");
   assert.equal(load({ languages: [], language: "zh-CN" }).api.locale, "en");
   assert.equal(load({ languages: ["fr-FR"] }).api.locale, "en");
 });
 
 test("existing English and Turkish preferences and formatting are preserved", () => {
-  const english = load({ saved: "en", languages: ["zh-CN"] }).api;
-  const turkish = load({ saved: "tr", languages: ["zh-CN"] }).api;
+  const english = load({ saved: "en", languages: ["fr-FR"] }).api;
+  const turkish = load({ saved: "tr", languages: ["fr-FR"] }).api;
   assert.equal(english.locale, "en");
   assert.equal(english.t("Language"), "Language");
   assert.equal(turkish.locale, "tr");
@@ -84,10 +84,10 @@ test("switching persists the existing storage key and reloads once", () => {
   const state = load();
   state.api.setLocale("en");
   assert.equal(state.reloads(), 0);
-  state.api.setLocale("zh-CN");
-  assert.deepEqual(state.writes, [["artex.locale", "zh-CN"]]);
+  state.api.setLocale("tr");
+  assert.deepEqual(state.writes, [["artex.locale", "tr"]]);
   assert.equal(state.reloads(), 1);
   const blocked = load({ blocked: true });
-  assert.doesNotThrow(() => blocked.api.setLocale("zh-CN"));
+  assert.doesNotThrow(() => blocked.api.setLocale("tr"));
   assert.equal(blocked.reloads(), 1);
 });

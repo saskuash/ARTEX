@@ -23,7 +23,9 @@ func TestInterceptSourceMatchesJudgeWriter(t *testing.T) {
 }
 
 func TestInterceptSourceLegacyModelPrefix(t *testing.T) {
-	for _, reason := range []string{"[模型] 允许", "[Model] fixture"} {
+	// The legacy Chinese prefix is kept verbatim: rows written before the English
+	// translation still carry it, so the classifier must keep recognizing it.
+	for _, reason := range []string{"[模型] allowed", "[Model] fixture"} {
 		if got := db.InterceptSource(0, reason); got != "model" {
 			t.Fatalf("%q classified as %q, want model", reason, got)
 		}

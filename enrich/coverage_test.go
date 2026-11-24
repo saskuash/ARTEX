@@ -38,7 +38,7 @@ func TestExtractTitle(t *testing.T) {
 		{"no title tag", "<html><body>hello</body></html>", ""},
 		{"empty body", "", ""},
 		{"title across lines", "<title>Line1\nLine2</title>", "Line1\nLine2"},
-		{"unicode", "<title>日本語テスト</title>", "日本語テスト"},
+		{"unicode", "<title>Título de prueba</title>", "Título de prueba"},
 		{"numeric entities", "<title>&#60;test&#62;</title>", "<test>"},
 	}
 	for _, tt := range tests {
