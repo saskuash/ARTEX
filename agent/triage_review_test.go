@@ -18,7 +18,7 @@ func TestCapTextCutsOnRuneBoundary(t *testing.T) {
 		cap  int
 	}{
 		{"cyrillic", strings.Repeat("уязвимость ", 80), 51},
-		{"cjk", strings.Repeat("数据泄露", 100), 401},
+		{"hangul", strings.Repeat("데이터 유출", 100), 401},
 		{"mixed", "SQLi: " + strings.Repeat("инъекция ", 90), 333},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
@@ -47,7 +47,7 @@ func TestBuildDuplicateStateCutsOnRuneBoundary(t *testing.T) {
 	for i := 0; i < 40; i++ {
 		existing = append(existing, TriageCandidate{
 			FindingID: int64(i + 1),
-			Name:      "数据泄露",
+			Name:      "데이터 유출",
 			Summary:   strings.Repeat("утечка данных через параметр ", 20),
 		})
 	}

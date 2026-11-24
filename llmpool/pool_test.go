@@ -370,10 +370,11 @@ func TestExpiredWindowIsClosed(t *testing.T) {
 	}
 }
 
-// A provider error body in Chinese is cut at 300 bytes; the cut must not split
-// a rune, or the breaker's last_error is rejected by PostgreSQL as invalid UTF-8.
+// A provider error body with multi-byte punctuation is cut at 300 bytes; the cut
+// must not split a rune, or the breaker's last_error is rejected by PostgreSQL as
+// invalid UTF-8.
 func TestTrimErrKeepsValidUTF8(t *testing.T) {
-	err := errors.New("openai: status 503: " + strings.Repeat("服务暂时不可用，请稍后重试。", 10))
+	err := errors.New("openai: status 503: " + strings.Repeat("Service unavailable — please try again later. ", 10))
 	got := trimErr(err)
 	if !utf8.ValidString(got) {
 		t.Fatalf("trimErr returned invalid UTF-8: %q", got)
